@@ -130,8 +130,21 @@ alter table public.maintenance_tickets enable row level security;
 create policy "read own profile" on public.profiles
   for select using (id = auth.uid());
 
+-- role is set once by handle_new_user() and must never be client-writable
+-- afterward. RLS's WITH CHECK can't compare a row's old vs. new value in
+-- one expression, so this is enforced at the Postgres privilege level
+-- instead: revoke table-wide UPDATE, then grant it back column-by-column
+-- for only what a user may edit themselves. (Revoking just the "role"
+-- column would NOT work here — a column-level REVOKE cannot carve an
+-- exception out of a pre-existing table-wide GRANT; the table-wide grant
+-- has to go first.)
+revoke update on public.profiles from authenticated;
+grant update (full_name) on public.profiles to authenticated;
+
 create policy "update own profile" on public.profiles
-  for update using (id = auth.uid());
+  for update
+  using (id = auth.uid())
+  with check (id = auth.uid());
 
 -- Landlord may read the profiles of tenants renting their properties
 create policy "landlord reads own tenants" on public.profiles
