@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
+import { DashboardNav } from '@/components/dashboard-nav'
 
 export default async function DashboardLayout({
   children,
@@ -13,5 +14,10 @@ export default async function DashboardLayout({
     redirect('/login')
   }
 
-  return children
+  return (
+    <>
+      <DashboardNav />
+      {children}
+    </>
+  )
 }

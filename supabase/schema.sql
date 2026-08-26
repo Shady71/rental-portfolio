@@ -257,3 +257,98 @@ create policy "tenant files tickets on own property" on public.maintenance_ticke
     and exists (select 1 from public.properties p
                 where p.id = property_id and p.tenant_id = auth.uid())
   );
+
+-- ---------- 7. TICKET UPDATES ----------
+-- A lean, one-directional progress log: landlords post, tenants read.
+-- No update/delete policies below — notes are append-only by design.
+create table public.ticket_updates (
+  id uuid primary key default gen_random_uuid(),
+  ticket_id uuid not null references public.maintenance_tickets(id) on delete cascade,
+  author_id uuid not null references public.profiles(id) on delete cascade,
+  body text not null,
+  created_at timestamptz not null default now()
+);
+
+create index idx_ticket_updates_ticket on public.ticket_updates(ticket_id);
+
+alter table public.ticket_updates enable row level security;
+
+-- Landlord may post a note only on a ticket belonging to a property they
+-- own, and only ever as themselves (author_id is checked against the
+-- caller, not trusted from the inserted row).
+create policy "landlord adds updates on own tickets" on public.ticket_updates
+  for insert with check (
+    author_id = auth.uid()
+    and exists (
+      select 1 from public.maintenance_tickets mt
+      join public.properties p on p.id = mt.property_id
+      where mt.id = ticket_id and p.owner_id = auth.uid()
+    )
+  );
+
+create policy "landlord reads updates on own tickets" on public.ticket_updates
+  for select using (
+    exists (
+      select 1 from public.maintenance_tickets mt
+      join public.properties p on p.id = mt.property_id
+      where mt.id = ticket_id and p.owner_id = auth.uid()
+    )
+  );
+
+-- Tenant may read notes on tickets that belong to the property they're
+-- currently assigned to.
+create policy "tenant reads updates on own property tickets" on public.ticket_updates
+  for select using (
+    exists (
+      select 1 from public.maintenance_tickets mt
+      join public.properties p on p.id = mt.property_id
+      where mt.id = ticket_id and p.tenant_id = auth.uid()
+    )
+  );
+
+-- ---------- TENANT LOOKUP (SECURITY DEFINER) ----------
+-- Lets a landlord resolve a tenant's user id from an email address
+-- without granting any broader access to auth.users or to other
+-- landlords' profiles. Runs with the function owner's privileges
+-- (bypassing the caller's own RLS), but the SQL inside is narrow and
+-- fixed: it can only ever return the id of a user whose role is
+-- 'tenant', or null. It cannot be used to probe arbitrary emails —
+-- a non-tenant email and a nonexistent email are indistinguishable
+-- to the caller (both return null).
+--
+-- Parameter name matters: PostgREST maps RPC call args by name, and
+-- the app calls supabase.rpc('find_tenant_by_email', { lookup_email }).
+create or replace function public.find_tenant_by_email(lookup_email text)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  caller_role text;
+  found_id uuid;
+begin
+  -- Only a landlord may perform this lookup — otherwise a tenant could
+  -- use this function to enumerate other tenants' existence.
+  select role into caller_role from public.profiles where id = auth.uid();
+
+  if caller_role is distinct from 'landlord' then
+    raise exception 'only landlords may look up tenants';
+  end if;
+
+  select u.id into found_id
+  from auth.users u
+  join public.profiles p on p.id = u.id
+  where lower(u.email) = lower(lookup_email)
+    and p.role = 'tenant'
+  limit 1;
+
+  return found_id;
+end;
+$$;
+
+-- Postgres grants EXECUTE on new functions to PUBLIC by default —
+-- revoke that, then grant only to logged-in users. anon (unauthenticated
+-- requests) can never call this at all.
+revoke all on function public.find_tenant_by_email(text) from public;
+grant execute on function public.find_tenant_by_email(text) to authenticated;
