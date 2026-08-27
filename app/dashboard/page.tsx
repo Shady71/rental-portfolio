@@ -1,13 +1,23 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import { formatPeriod, getCurrentPeriod, getNextPeriod } from '@/lib/rent'
 import { summarizePropertyMonth, summarizePortfolio, sortByAttention, type PropertyMonthInput } from '@/lib/portfolio'
 import { RentStatusBadge } from '@/components/rent-status-badge'
+import { RoleBadge } from '@/components/role-badge'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
   const period = getCurrentPeriod()
   const periodEnd = getNextPeriod(period)
+
+  const { data: authData } = await supabase.auth.getClaims()
+  if (!authData) {
+    redirect('/login')
+  }
+
+  const { data: profile } = await supabase.from('profiles').select('full_name, role').maybeSingle()
+  const displayName = profile?.full_name?.trim() || authData.claims.email || 'there'
 
   const { data: properties, error } = await supabase
     .from('properties')
@@ -51,8 +61,11 @@ export default async function DashboardPage() {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">Portfolio dashboard</h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">{formatPeriod(period)}</p>
+        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">Welcome, {displayName}</h1>
+        <div className="mt-1 flex items-center gap-2">
+          <RoleBadge role={profile?.role ?? 'landlord'} />
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">{formatPeriod(period)}</p>
+        </div>
       </div>
 
       <div

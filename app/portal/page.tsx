@@ -7,6 +7,7 @@ import { TicketUpdatesTimeline } from '@/components/ticket-updates-timeline'
 import type { MaintenanceTicket, TicketUpdate } from '@/lib/maintenance'
 import { TenantRentSection } from '@/components/tenant-rent-section'
 import type { RentChargeWithPayments } from '@/lib/rent'
+import { RoleBadge } from '@/components/role-badge'
 
 type TenantTicket = MaintenanceTicket & { updates: TicketUpdate[] }
 
@@ -17,6 +18,9 @@ export default async function PortalPage() {
   if (!data) {
     redirect('/login')
   }
+
+  const { data: profile } = await supabase.from('profiles').select('full_name, role').maybeSingle()
+  const displayName = profile?.full_name?.trim() || data.claims.email || 'there'
 
   // A tenant is expected to have exactly one assigned property. The schema
   // doesn't enforce that with a unique constraint, so this defensively
@@ -64,7 +68,12 @@ export default async function PortalPage() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-2xl flex-col gap-6 px-4 py-10">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">Tenant portal</h1>
+        <div>
+          <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">Welcome, {displayName}</h1>
+          <div className="mt-1">
+            <RoleBadge role={profile?.role ?? 'tenant'} />
+          </div>
+        </div>
         <LogoutButton />
       </div>
 
