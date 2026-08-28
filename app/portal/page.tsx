@@ -6,18 +6,27 @@ import { TicketStatusBadge } from '@/components/ticket-status-badge'
 import { TicketUpdatesTimeline } from '@/components/ticket-updates-timeline'
 import type { MaintenanceTicket, TicketUpdate } from '@/lib/maintenance'
 import { TenantRentSection } from '@/components/tenant-rent-section'
-import type { RentChargeWithPayments } from '@/lib/rent'
+import { getCurrentPeriod, RENT_HISTORY_PAGE_SIZE, type RentChargeWithPayments } from '@/lib/rent'
 import { RoleBadge } from '@/components/role-badge'
 
 type TenantTicket = MaintenanceTicket & { updates: TicketUpdate[] }
 
-export default async function PortalPage() {
+export default async function PortalPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ rentPage?: string }>
+}) {
   const supabase = await createClient()
   const { data } = await supabase.auth.getClaims()
 
   if (!data) {
     redirect('/login')
   }
+
+  const { rentPage: rentPageParam } = await searchParams
+  const rentPage = Math.max(1, Number(rentPageParam) || 1)
+  const rentFrom = (rentPage - 1) * RENT_HISTORY_PAGE_SIZE
+  const rentTo = rentFrom + RENT_HISTORY_PAGE_SIZE - 1
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -37,15 +46,30 @@ export default async function PortalPage() {
     .limit(1)
     .maybeSingle()
 
-  const { data: charges, error: chargesError } = property
+  const currentPeriod = getCurrentPeriod()
+
+  const { data: currentCharge, error: currentChargeError } = property
     ? await supabase
         .from('rent_charges')
         .select('id, period, amount_due, due_date, payments ( id, amount, paid_at )')
         .eq('property_id', property.id)
-        .order('period', { ascending: false })
-        .limit(12)
-        .returns<RentChargeWithPayments[]>()
+        .eq('period', currentPeriod)
+        .maybeSingle()
     : { data: null, error: null }
+
+  const { data: rentHistory, count: rentHistoryCount, error: rentHistoryError } = property
+    ? await supabase
+        .from('rent_charges')
+        .select('id, period, amount_due, due_date, payments ( id, amount, paid_at )', { count: 'exact' })
+        .eq('property_id', property.id)
+        .neq('period', currentPeriod)
+        .order('period', { ascending: false })
+        .range(rentFrom, rentTo)
+        .returns<RentChargeWithPayments[]>()
+    : { data: null, count: null, error: null }
+
+  const rentTotalPages = Math.max(1, Math.ceil((rentHistoryCount ?? 0) / RENT_HISTORY_PAGE_SIZE))
+  const chargesError = currentChargeError || rentHistoryError
 
   const { data: tickets } = property
     ? await supabase
@@ -102,7 +126,12 @@ export default async function PortalPage() {
                 Could not load rent info: {chargesError.message}
               </p>
             ) : (
-              <TenantRentSection charges={charges ?? []} />
+              <TenantRentSection
+                currentCharge={currentCharge}
+                history={rentHistory ?? []}
+                page={rentPage}
+                totalPages={rentTotalPages}
+              />
             )}
           </div>
 

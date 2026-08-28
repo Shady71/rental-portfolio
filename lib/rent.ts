@@ -43,6 +43,8 @@ export function deriveChargeStatus(
   return { status: isOverdue ? 'overdue' : 'due', totalPaid, remaining }
 }
 
+export const RENT_HISTORY_PAGE_SIZE = 12
+
 export function getCurrentPeriod(today: Date = new Date()): string {
   return `${toISODate(today).slice(0, 7)}-01`
 }

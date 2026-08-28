@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import { RentSection } from '@/components/rent-section'
-import type { RentChargeWithPayments } from '@/lib/rent'
+import { RENT_HISTORY_PAGE_SIZE, type RentChargeWithPayments } from '@/lib/rent'
 import { ExpensesSection } from '@/components/expenses-section'
 import type { Expense } from '@/lib/expenses'
 import { TenantSection } from '@/components/tenant-section'
@@ -11,10 +11,16 @@ import type { TicketStatus, TicketUpdate } from '@/lib/maintenance'
 
 export default async function PropertyDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ rentPage?: string }>
 }) {
   const { id } = await params
+  const { rentPage: rentPageParam } = await searchParams
+  const rentPage = Math.max(1, Number(rentPageParam) || 1)
+  const rentFrom = (rentPage - 1) * RENT_HISTORY_PAGE_SIZE
+  const rentTo = rentFrom + RENT_HISTORY_PAGE_SIZE - 1
   const supabase = await createClient()
 
   const { data: authData } = await supabase.auth.getClaims()
@@ -42,12 +48,12 @@ export default async function PropertyDetailPage({
     tenantName = tenantProfile?.full_name ?? null
   }
 
-  const { data: charges, error: chargesError } = await supabase
+  const { data: charges, count: chargesCount, error: chargesError } = await supabase
     .from('rent_charges')
-    .select('id, period, amount_due, due_date, payments ( id, amount, paid_at )')
+    .select('id, period, amount_due, due_date, payments ( id, amount, paid_at )', { count: 'exact' })
     .eq('property_id', property.id)
     .order('period', { ascending: false })
-    .limit(12)
+    .range(rentFrom, rentTo)
     .returns<RentChargeWithPayments[]>()
 
   if (chargesError) {
@@ -62,6 +68,8 @@ export default async function PropertyDetailPage({
       </main>
     )
   }
+
+  const rentTotalPages = Math.max(1, Math.ceil((chargesCount ?? 0) / RENT_HISTORY_PAGE_SIZE))
 
   const { data: expenses, error: expensesError } = await supabase
     .from('expenses')
@@ -198,7 +206,7 @@ export default async function PropertyDetailPage({
 
         <div className="rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
           <h2 className="mb-3 font-medium text-zinc-700 dark:text-zinc-300">Rent</h2>
-          <RentSection propertyId={property.id} charges={charges ?? []} />
+          <RentSection propertyId={property.id} charges={charges ?? []} page={rentPage} totalPages={rentTotalPages} />
         </div>
 
         <div className="rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
