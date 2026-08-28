@@ -1,6 +1,7 @@
 'use server'
 
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
 import { mapAuthError } from '@/lib/auth-errors'
 
@@ -25,6 +26,11 @@ export async function signup(
     return { error: 'Please select a valid role.' }
   }
 
+  const headersList = await headers()
+  const host = headersList.get('x-forwarded-host') ?? headersList.get('host')
+  const protocol = headersList.get('x-forwarded-proto') ?? (host?.startsWith('localhost') ? 'http' : 'https')
+  const origin = `${protocol}://${host}`
+
   const supabase = await createClient()
 
   const { data, error } = await supabase.auth.signUp({
@@ -35,6 +41,7 @@ export async function signup(
         full_name: fullName,
         role,
       },
+      emailRedirectTo: `${origin}/auth/callback`,
     },
   })
 

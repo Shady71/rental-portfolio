@@ -9,6 +9,20 @@ const initialState: SignupState = {}
 export default function SignupPage() {
   const [state, formAction, pending] = useActionState(signup, initialState)
 
+  if (state.info) {
+    return (
+      <main className="mx-auto flex min-h-screen w-full max-w-sm flex-col justify-center gap-6 px-4 text-center">
+        <h1 className="text-2xl font-semibold text-accent">Check your email</h1>
+        <p role="status" className="rounded-md bg-info-bg px-3 py-2 text-sm text-info-text">
+          {state.info}
+        </p>
+        <Link href="/login" className="text-sm font-medium text-heading underline">
+          Back to log in
+        </Link>
+      </main>
+    )
+  }
+
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-sm flex-col justify-center gap-6 px-4">
       <h1 className="text-2xl font-semibold text-accent">
@@ -86,15 +100,6 @@ export default function SignupPage() {
             {state.error}
           </p>
         )}
-        {state.info && (
-          <p
-            role="status"
-            className="rounded-md bg-info-bg px-3 py-2 text-sm text-info-text"
-          >
-            {state.info}
-          </p>
-        )}
-
         <button
           type="submit"
           disabled={pending}

@@ -1,12 +1,17 @@
 'use client'
 
 import Link from 'next/link'
-import { useActionState } from 'react'
+import { use, useActionState } from 'react'
 import { login, type LoginState } from './actions'
 
 const initialState: LoginState = {}
 
-export default function LoginPage() {
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>
+}) {
+  const { error: linkError } = use(searchParams)
   const [state, formAction, pending] = useActionState(login, initialState)
 
   return (
@@ -14,6 +19,12 @@ export default function LoginPage() {
       <h1 className="text-2xl font-semibold text-accent">
         Log in
       </h1>
+
+      {linkError === 'confirmation_failed' && (
+        <p role="alert" className="rounded-md bg-danger-bg px-3 py-2 text-sm text-danger-text">
+          That confirmation link is invalid or has expired. Please try logging in, or sign up again.
+        </p>
+      )}
 
       <form action={formAction} className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">
