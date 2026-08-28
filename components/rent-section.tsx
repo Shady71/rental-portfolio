@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { deriveChargeStatus, formatPeriod, type RentChargeWithPayments } from '@/lib/rent'
 import { RentStatusBadge } from '@/components/rent-status-badge'
 import { PaymentForm } from '@/components/payment-form'
+import { EditPaymentForm } from '@/components/edit-payment-form'
+import { DeletePaymentForm } from '@/components/delete-payment-form'
 
 export function RentSection({
   propertyId,
@@ -46,11 +48,33 @@ export function RentSection({
               </div>
 
               {charge.payments.length > 0 && (
-                <ul className="flex flex-col gap-0.5 text-xs text-zinc-500 dark:text-zinc-400">
+                <ul className="flex flex-col gap-2 text-xs text-zinc-500 dark:text-zinc-400">
                   {charge.payments.map((payment) => (
-                    <li key={payment.id}>
-                      ${payment.amount.toLocaleString()} on{' '}
-                      {new Date(payment.paid_at).toLocaleDateString()}
+                    <li key={payment.id} className="flex flex-col gap-1">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span>
+                          ${payment.amount.toLocaleString()} on {new Date(payment.paid_at).toLocaleDateString()}
+                        </span>
+                        <div className="flex gap-3">
+                          <details>
+                            <summary className="w-fit cursor-pointer font-medium text-zinc-600 underline dark:text-zinc-400">
+                              Edit
+                            </summary>
+                            <EditPaymentForm
+                              paymentId={payment.id}
+                              propertyId={propertyId}
+                              defaultAmount={payment.amount}
+                              defaultPaidAt={payment.paid_at.slice(0, 10)}
+                            />
+                          </details>
+                          <details>
+                            <summary className="w-fit cursor-pointer font-medium text-red-700 underline dark:text-red-400">
+                              Delete
+                            </summary>
+                            <DeletePaymentForm paymentId={payment.id} propertyId={propertyId} />
+                          </details>
+                        </div>
+                      </div>
                     </li>
                   ))}
                 </ul>

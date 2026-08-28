@@ -118,3 +118,65 @@ export async function recordPayment(
   revalidatePath('/dashboard/rent')
   return {}
 }
+
+export async function updatePayment(
+  paymentId: string,
+  propertyId: string,
+  _prevState: PaymentFormState,
+  formData: FormData
+): Promise<PaymentFormState> {
+  const { amount, paidAt, errors } = parsePaymentForm(formData)
+  if (Object.keys(errors).length > 0) {
+    return { errors }
+  }
+
+  const supabase = await createClient()
+  const { data } = await supabase.auth.getClaims()
+  if (!data) {
+    redirect('/login')
+  }
+
+  const { data: updated, error } = await supabase
+    .from('payments')
+    .update({ amount, paid_at: paidAt })
+    .eq('id', paymentId)
+    .select('id')
+    .maybeSingle()
+
+  if (error) {
+    return { formError: error.message }
+  }
+  if (!updated) {
+    return { formError: 'Payment not found, or you no longer have access to it.' }
+  }
+
+  revalidatePath(`/dashboard/properties/${propertyId}`)
+  revalidatePath('/dashboard/rent')
+  return {}
+}
+
+export async function deletePayment(paymentId: string, propertyId: string): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data } = await supabase.auth.getClaims()
+  if (!data) {
+    redirect('/login')
+  }
+
+  const { data: deleted, error } = await supabase
+    .from('payments')
+    .delete()
+    .eq('id', paymentId)
+    .select('id')
+    .maybeSingle()
+
+  if (error) {
+    return { error: error.message }
+  }
+  if (!deleted) {
+    return { error: 'Payment not found, or you no longer have access to it.' }
+  }
+
+  revalidatePath(`/dashboard/properties/${propertyId}`)
+  revalidatePath('/dashboard/rent')
+  return {}
+}
