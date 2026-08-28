@@ -87,10 +87,6 @@ export default async function DashboardPage() {
         >
           {isPositive ? '+' : '-'}${Math.abs(portfolio.netCashFlow).toLocaleString()}
         </p>
-        <p className="mt-1 text-sm text-muted ">
-          ${portfolio.rentCollected.toLocaleString()} collected − ${portfolio.totalExpenses.toLocaleString()} in
-          expenses
-        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
