@@ -20,12 +20,13 @@ export async function generateMonthlyCharges(): Promise<GenerateChargesState> {
   const { data: properties, error: propertiesError } = await supabase
     .from('properties')
     .select('id, monthly_rent')
+    .eq('status', 'occupied')
 
   if (propertiesError) {
     return { error: propertiesError.message }
   }
   if (!properties || properties.length === 0) {
-    return { error: 'Add a property before generating charges.' }
+    return { error: 'No occupied properties to generate charges for.' }
   }
 
   const period = getCurrentPeriod()
@@ -54,7 +55,7 @@ export async function generateMonthlyCharges(): Promise<GenerateChargesState> {
   revalidatePath('/dashboard/properties')
 
   return {
-    message: `Created ${created} charge${created === 1 ? '' : 's'}, ${skipped} already existed.`,
+    message: `Created ${created} charge${created === 1 ? '' : 's'} for occupied properties, ${skipped} already existed.`,
   }
 }
 
