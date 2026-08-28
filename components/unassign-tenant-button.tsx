@@ -14,12 +14,12 @@ export function UnassignTenantButton({ propertyId }: { propertyId: string }) {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md border border-zinc-300 px-2 py-1 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-900"
+        className="rounded-md border border-edge-strong px-2 py-1 text-xs font-medium text-body transition-colors hover:bg-surface-raised hover:text-heading disabled:opacity-50"
       >
         {pending ? 'Removing…' : 'Unassign'}
       </button>
       {state.error && (
-        <p role="alert" className="text-xs text-red-700 dark:text-red-400">
+        <p role="alert" className="text-xs text-danger-text">
           {state.error}
         </p>
       )}

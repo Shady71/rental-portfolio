@@ -61,7 +61,7 @@ export default async function PropertyDetailPage({
       <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-10">
         <p
           role="alert"
-          className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-300"
+          className="rounded-md bg-danger-bg px-3 py-2 text-sm text-danger-text"
         >
           Could not load rent charges: {chargesError.message}
         </p>
@@ -84,7 +84,7 @@ export default async function PropertyDetailPage({
       <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-10">
         <p
           role="alert"
-          className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-300"
+          className="rounded-md bg-danger-bg px-3 py-2 text-sm text-danger-text"
         >
           Could not load expenses: {expensesError.message}
         </p>
@@ -128,7 +128,7 @@ export default async function PropertyDetailPage({
       <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-10">
         <p
           role="alert"
-          className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-300"
+          className="rounded-md bg-danger-bg px-3 py-2 text-sm text-danger-text"
         >
           Could not load maintenance tickets: {ticketsError.message}
         </p>
@@ -153,69 +153,69 @@ export default async function PropertyDetailPage({
         <div>
           <Link
             href="/dashboard/properties"
-            className="text-sm text-zinc-600 underline dark:text-zinc-400"
+            className="text-sm text-muted underline "
           >
             ← All properties
           </Link>
-          <h1 className="mt-1 text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+          <h1 className="mt-1 text-2xl font-semibold text-accent">
             {property.address}
           </h1>
         </div>
         <div className="flex gap-2">
           <Link
             href={`/dashboard/properties/${property.id}/edit`}
-            className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-900"
+            className="rounded-md border border-edge-strong px-3 py-1.5 text-sm font-medium text-body transition-colors hover:bg-surface-raised hover:text-heading"
           >
             Edit
           </Link>
           <Link
             href={`/dashboard/properties/${property.id}/delete`}
-            className="rounded-md border border-red-300 px-3 py-1.5 text-sm font-medium text-red-700 transition-colors hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950"
+            className="rounded-md border border-danger-text/40 px-3 py-1.5 text-sm font-medium text-danger-text transition-colors hover:bg-danger-bg"
           >
             Delete
           </Link>
         </div>
       </div>
 
-      <dl className="grid grid-cols-2 gap-4 rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
+      <dl className="grid grid-cols-2 gap-4 rounded-md border border-edge p-4 ">
         <div>
-          <dt className="text-sm text-zinc-500 dark:text-zinc-400">Monthly rent</dt>
-          <dd className="text-lg text-zinc-950 dark:text-zinc-50">
+          <dt className="text-sm text-muted ">Monthly rent</dt>
+          <dd className="text-lg text-heading ">
             ${property.monthly_rent.toLocaleString()}
           </dd>
         </div>
         <div>
-          <dt className="text-sm text-zinc-500 dark:text-zinc-400">Purchase price</dt>
-          <dd className="text-lg text-zinc-950 dark:text-zinc-50">
+          <dt className="text-sm text-muted ">Purchase price</dt>
+          <dd className="text-lg text-heading ">
             {property.purchase_price ? `$${property.purchase_price.toLocaleString()}` : '—'}
           </dd>
         </div>
         <div>
-          <dt className="text-sm text-zinc-500 dark:text-zinc-400">Added on</dt>
-          <dd className="text-lg text-zinc-950 dark:text-zinc-50">
+          <dt className="text-sm text-muted ">Added on</dt>
+          <dd className="text-lg text-heading ">
             {new Date(property.created_at).toLocaleDateString()}
           </dd>
         </div>
       </dl>
 
       <section className="flex flex-col gap-4">
-        <div className="rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
-          <h2 className="mb-3 font-medium text-zinc-700 dark:text-zinc-300">Tenant</h2>
+        <div className="rounded-md border border-edge p-4 ">
+          <h2 className="mb-3 font-medium text-body ">Tenant</h2>
           <TenantSection propertyId={property.id} isAssigned={property.tenant_id !== null} tenantName={tenantName} />
         </div>
 
-        <div className="rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
-          <h2 className="mb-3 font-medium text-zinc-700 dark:text-zinc-300">Rent</h2>
+        <div className="rounded-md border border-edge p-4 ">
+          <h2 className="mb-3 font-medium text-body ">Rent</h2>
           <RentSection propertyId={property.id} charges={charges ?? []} page={rentPage} totalPages={rentTotalPages} />
         </div>
 
-        <div className="rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
-          <h2 className="mb-3 font-medium text-zinc-700 dark:text-zinc-300">Expenses</h2>
+        <div className="rounded-md border border-edge p-4 ">
+          <h2 className="mb-3 font-medium text-body ">Expenses</h2>
           <ExpensesSection propertyId={property.id} expenses={expenses ?? []} total={expenseTotal} />
         </div>
 
-        <div className="rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
-          <h2 className="mb-3 font-medium text-zinc-700 dark:text-zinc-300">Maintenance</h2>
+        <div className="rounded-md border border-edge p-4 ">
+          <h2 className="mb-3 font-medium text-body ">Maintenance</h2>
           <MaintenanceSection propertyId={property.id} viewerId={authData.claims.sub} tickets={tickets} />
         </div>
       </section>

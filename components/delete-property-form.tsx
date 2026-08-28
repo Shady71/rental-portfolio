@@ -19,7 +19,7 @@ export function DeletePropertyForm({ propertyId }: { propertyId: string }) {
         {pending ? 'Deleting…' : 'Yes, delete this property'}
       </button>
       {state.error && (
-        <p role="alert" className="text-sm text-red-700 dark:text-red-400">
+        <p role="alert" className="text-sm text-danger-text">
           {state.error}
         </p>
       )}

@@ -24,7 +24,7 @@ export function EditPaymentForm({
   return (
     <form action={formAction} className="mt-1 flex flex-wrap items-end gap-3">
       <div className="flex flex-col gap-1">
-        <label htmlFor={`edit-amount-${paymentId}`} className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+        <label htmlFor={`edit-amount-${paymentId}`} className="text-xs font-medium text-body ">
           Amount
         </label>
         <input
@@ -35,13 +35,13 @@ export function EditPaymentForm({
           min="0.01"
           defaultValue={defaultAmount}
           required
-          className="w-28 rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-950 focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+          className="w-28 rounded-md border border-edge-strong bg-surface-raised px-2 py-1.5 text-sm text-heading focus:border-accent focus:outline-none   "
         />
-        {state.errors?.amount && <p className="text-xs text-red-700 dark:text-red-400">{state.errors.amount}</p>}
+        {state.errors?.amount && <p className="text-xs text-danger-text">{state.errors.amount}</p>}
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor={`edit-paid_at-${paymentId}`} className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+        <label htmlFor={`edit-paid_at-${paymentId}`} className="text-xs font-medium text-body ">
           Date
         </label>
         <input
@@ -51,21 +51,21 @@ export function EditPaymentForm({
           defaultValue={defaultPaidAt}
           max={today}
           required
-          className="rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-950 focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+          className="rounded-md border border-edge-strong bg-surface-raised px-2 py-1.5 text-sm text-heading focus:border-accent focus:outline-none   "
         />
-        {state.errors?.paid_at && <p className="text-xs text-red-700 dark:text-red-400">{state.errors.paid_at}</p>}
+        {state.errors?.paid_at && <p className="text-xs text-danger-text">{state.errors.paid_at}</p>}
       </div>
 
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md bg-zinc-950 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+        className="rounded-md bg-surface-hover px-3 py-1.5 text-sm font-medium text-heading transition-colors hover:bg-edge-strong disabled:opacity-50"
       >
         {pending ? 'Saving…' : 'Save'}
       </button>
 
       {state.formError && (
-        <p role="alert" className="w-full text-xs text-red-700 dark:text-red-400">
+        <p role="alert" className="w-full text-xs text-danger-text">
           {state.formError}
         </p>
       )}

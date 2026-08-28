@@ -17,7 +17,7 @@ export function DeleteExpenseForm({
 
   return (
     <details className="shrink-0">
-      <summary className="w-fit cursor-pointer text-xs font-medium text-red-700 underline dark:text-red-400">
+      <summary className="w-fit cursor-pointer text-xs font-medium text-danger-text underline ">
         Delete
       </summary>
       <form action={formAction} className="mt-1 flex flex-col items-end gap-1">
@@ -29,7 +29,7 @@ export function DeleteExpenseForm({
           {pending ? 'Deleting…' : 'Confirm delete'}
         </button>
         {state.error && (
-          <p role="alert" className="text-xs text-red-700 dark:text-red-400">
+          <p role="alert" className="text-xs text-danger-text">
             {state.error}
           </p>
         )}

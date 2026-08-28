@@ -11,13 +11,13 @@ export default function LoginPage() {
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-sm flex-col justify-center gap-6 px-4">
-      <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+      <h1 className="text-2xl font-semibold text-accent">
         Log in
       </h1>
 
       <form action={formAction} className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">
-          <label htmlFor="email" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label htmlFor="email" className="text-sm font-medium text-body ">
             Email
           </label>
           <input
@@ -26,12 +26,12 @@ export default function LoginPage() {
             type="email"
             required
             autoComplete="email"
-            className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-950 focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+            className="rounded-md border border-edge-strong bg-surface-raised px-3 py-2 text-sm text-heading focus:border-accent focus:outline-none   "
           />
         </div>
 
         <div className="flex flex-col gap-1">
-          <label htmlFor="password" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label htmlFor="password" className="text-sm font-medium text-body ">
             Password
           </label>
           <input
@@ -40,14 +40,14 @@ export default function LoginPage() {
             type="password"
             required
             autoComplete="current-password"
-            className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-950 focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+            className="rounded-md border border-edge-strong bg-surface-raised px-3 py-2 text-sm text-heading focus:border-accent focus:outline-none   "
           />
         </div>
 
         {state.error && (
           <p
             role="alert"
-            className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-300"
+            className="rounded-md bg-danger-bg px-3 py-2 text-sm text-danger-text"
           >
             {state.error}
           </p>
@@ -56,15 +56,15 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-zinc-950 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+          className="rounded-md bg-accent-strong px-3 py-2 text-sm font-medium text-accent-foreground transition-colors hover:bg-accent disabled:opacity-50"
         >
           {pending ? 'Logging in…' : 'Log in'}
         </button>
       </form>
 
-      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+      <p className="text-sm text-muted ">
         Don&apos;t have an account?{' '}
-        <Link href="/signup" className="font-medium text-zinc-950 underline dark:text-zinc-50">
+        <Link href="/signup" className="font-medium text-heading underline ">
           Sign up
         </Link>
       </p>

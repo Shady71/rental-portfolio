@@ -17,7 +17,7 @@ export function ExpenseForm({
   return (
     <form action={formAction} className="mt-3 flex flex-wrap items-end gap-3">
       <div className="flex flex-col gap-1">
-        <label htmlFor="amount" className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+        <label htmlFor="amount" className="text-xs font-medium text-body ">
           Amount
         </label>
         <input
@@ -27,15 +27,15 @@ export function ExpenseForm({
           step="0.01"
           min="0.01"
           required
-          className="w-28 rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-950 focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+          className="w-28 rounded-md border border-edge-strong bg-surface-raised px-2 py-1.5 text-sm text-heading focus:border-accent focus:outline-none   "
         />
         {state.errors?.amount && (
-          <p className="text-xs text-red-700 dark:text-red-400">{state.errors.amount}</p>
+          <p className="text-xs text-danger-text">{state.errors.amount}</p>
         )}
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="category" className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+        <label htmlFor="category" className="text-xs font-medium text-body ">
           Category
         </label>
         <select
@@ -43,7 +43,7 @@ export function ExpenseForm({
           name="category"
           required
           defaultValue=""
-          className="rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-950 focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+          className="rounded-md border border-edge-strong bg-surface-raised px-2 py-1.5 text-sm text-heading focus:border-accent focus:outline-none   "
         >
           <option value="" disabled>
             Select
@@ -55,12 +55,12 @@ export function ExpenseForm({
           ))}
         </select>
         {state.errors?.category && (
-          <p className="text-xs text-red-700 dark:text-red-400">{state.errors.category}</p>
+          <p className="text-xs text-danger-text">{state.errors.category}</p>
         )}
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="incurred_on" className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+        <label htmlFor="incurred_on" className="text-xs font-medium text-body ">
           Date
         </label>
         <input
@@ -70,35 +70,35 @@ export function ExpenseForm({
           defaultValue={today}
           max={today}
           required
-          className="rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-950 focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+          className="rounded-md border border-edge-strong bg-surface-raised px-2 py-1.5 text-sm text-heading focus:border-accent focus:outline-none   "
         />
         {state.errors?.incurred_on && (
-          <p className="text-xs text-red-700 dark:text-red-400">{state.errors.incurred_on}</p>
+          <p className="text-xs text-danger-text">{state.errors.incurred_on}</p>
         )}
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="note" className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-          Note <span className="text-zinc-400">(optional)</span>
+        <label htmlFor="note" className="text-xs font-medium text-body ">
+          Note <span className="text-muted">(optional)</span>
         </label>
         <input
           id="note"
           name="note"
           type="text"
-          className="w-40 rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-950 focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+          className="w-40 rounded-md border border-edge-strong bg-surface-raised px-2 py-1.5 text-sm text-heading focus:border-accent focus:outline-none   "
         />
       </div>
 
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md bg-zinc-950 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+        className="rounded-md bg-surface-hover px-3 py-1.5 text-sm font-medium text-heading transition-colors hover:bg-edge-strong disabled:opacity-50"
       >
         {pending ? 'Adding…' : 'Add expense'}
       </button>
 
       {state.formError && (
-        <p role="alert" className="w-full text-xs text-red-700 dark:text-red-400">
+        <p role="alert" className="w-full text-xs text-danger-text">
           {state.formError}
         </p>
       )}

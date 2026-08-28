@@ -1,9 +1,9 @@
 import { formatTicketStatus, type TicketStatus } from '@/lib/maintenance'
 
 const STYLES: Record<TicketStatus, string> = {
-  open: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
-  in_progress: 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300',
-  resolved: 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300',
+  open: 'bg-warning-bg text-warning-text',
+  in_progress: 'bg-info-bg text-info-text',
+  resolved: 'bg-success-bg text-success-text',
 }
 
 export function TicketStatusBadge({ status }: { status: TicketStatus }) {

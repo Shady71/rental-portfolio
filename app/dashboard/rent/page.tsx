@@ -46,7 +46,7 @@ export default async function RentOverviewPage() {
       <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-10">
         <p
           role="alert"
-          className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-300"
+          className="rounded-md bg-danger-bg px-3 py-2 text-sm text-danger-text"
         >
           Could not load rent overview: {error.message}
         </p>
@@ -76,7 +76,7 @@ export default async function RentOverviewPage() {
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-10">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+        <h1 className="text-2xl font-semibold text-accent">
           Rent — {formatPeriod(period)}
         </h1>
         <GenerateChargesButton />
@@ -86,22 +86,22 @@ export default async function RentOverviewPage() {
         {summary.map((item) => (
           <div
             key={item.label}
-            className="rounded-md border border-zinc-200 p-4 dark:border-zinc-800"
+            className="rounded-md border border-edge p-4 "
           >
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">{item.label}</p>
-            <p className="text-xl font-semibold text-zinc-950 dark:text-zinc-50">{item.value}</p>
+            <p className="text-sm text-muted ">{item.label}</p>
+            <p className="text-xl font-semibold text-heading ">{item.value}</p>
           </div>
         ))}
       </div>
 
       {rows.length === 0 ? (
-        <p className="text-zinc-600 dark:text-zinc-400">
+        <p className="text-muted ">
           You don&apos;t have any properties yet.
         </p>
       ) : (
-        <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
+        <div className="overflow-x-auto rounded-md border border-edge ">
           <table className="w-full text-left text-sm">
-            <thead className="bg-zinc-50 text-zinc-500 dark:bg-zinc-900 dark:text-zinc-400">
+            <thead className="bg-surface-raised text-muted  ">
               <tr>
                 <th className="px-4 py-2 font-medium">Property</th>
                 <th className="px-4 py-2 font-medium">Monthly rent</th>
@@ -111,26 +111,26 @@ export default async function RentOverviewPage() {
             </thead>
             <tbody>
               {rows.map(({ property, charge, status, remaining }) => (
-                <tr key={property.id} className="border-t border-zinc-200 dark:border-zinc-800">
+                <tr key={property.id} className="border-t border-edge ">
                   <td className="px-4 py-2">
                     <Link
                       href={`/dashboard/properties/${property.id}`}
-                      className="font-medium text-zinc-950 underline dark:text-zinc-50"
+                      className="font-medium text-heading underline "
                     >
                       {property.address}
                     </Link>
                   </td>
-                  <td className="px-4 py-2 text-zinc-700 dark:text-zinc-300">
+                  <td className="px-4 py-2 text-body ">
                     ${property.monthly_rent.toLocaleString()}
                   </td>
                   <td className="px-4 py-2">
                     {status ? (
                       <RentStatusBadge status={status} />
                     ) : (
-                      <span className="text-xs text-zinc-400">Not generated</span>
+                      <span className="text-xs text-muted">Not generated</span>
                     )}
                   </td>
-                  <td className="px-4 py-2 text-zinc-700 dark:text-zinc-300">
+                  <td className="px-4 py-2 text-body ">
                     {charge ? `$${remaining.toLocaleString()}` : '—'}
                   </td>
                 </tr>

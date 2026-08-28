@@ -18,7 +18,7 @@ export function RentSection({
 }) {
   if (charges.length === 0 && page === 1) {
     return (
-      <p className="text-sm text-zinc-500 dark:text-zinc-400">
+      <p className="text-sm text-muted ">
         No rent charges yet. Generate this month&apos;s charges from the{' '}
         <a href="/dashboard/rent" className="underline">
           rent overview
@@ -30,25 +30,25 @@ export function RentSection({
 
   return (
     <div className="flex flex-col gap-3">
-      <ul className="flex flex-col divide-y divide-zinc-200 dark:divide-zinc-800">
+      <ul className="flex flex-col divide-y divide-edge ">
         {charges.map((charge) => {
           const { status, totalPaid, remaining } = deriveChargeStatus(charge, charge.payments)
           return (
             <li key={charge.id} className="flex flex-col gap-2 py-3 first:pt-0 last:pb-0">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-3">
-                  <span className="font-medium text-zinc-950 dark:text-zinc-50">
+                  <span className="font-medium text-heading ">
                     {formatPeriod(charge.period)}
                   </span>
                   <RentStatusBadge status={status} />
                 </div>
-                <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                <span className="text-sm text-muted ">
                   ${charge.amount_due.toLocaleString()} due · ${totalPaid.toLocaleString()} paid
                 </span>
               </div>
 
               {charge.payments.length > 0 && (
-                <ul className="flex flex-col gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+                <ul className="flex flex-col gap-2 text-xs text-muted ">
                   {charge.payments.map((payment) => (
                     <li key={payment.id} className="flex flex-col gap-1">
                       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -57,7 +57,7 @@ export function RentSection({
                         </span>
                         <div className="flex gap-3">
                           <details>
-                            <summary className="w-fit cursor-pointer font-medium text-zinc-600 underline dark:text-zinc-400">
+                            <summary className="w-fit cursor-pointer font-medium text-muted underline ">
                               Edit
                             </summary>
                             <EditPaymentForm
@@ -68,7 +68,7 @@ export function RentSection({
                             />
                           </details>
                           <details>
-                            <summary className="w-fit cursor-pointer font-medium text-red-700 underline dark:text-red-400">
+                            <summary className="w-fit cursor-pointer font-medium text-danger-text underline ">
                               Delete
                             </summary>
                             <DeletePaymentForm paymentId={payment.id} propertyId={propertyId} />
@@ -82,7 +82,7 @@ export function RentSection({
 
               {status !== 'paid' && (
                 <details>
-                  <summary className="w-fit cursor-pointer text-sm font-medium text-zinc-700 underline dark:text-zinc-300">
+                  <summary className="w-fit cursor-pointer text-sm font-medium text-body underline ">
                     Record payment
                   </summary>
                   <PaymentForm chargeId={charge.id} propertyId={propertyId} defaultAmount={remaining} />
@@ -94,7 +94,7 @@ export function RentSection({
       </ul>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+        <div className="flex items-center justify-between text-xs text-muted ">
           <p>
             Page {page} of {totalPages}
           </p>
@@ -102,8 +102,8 @@ export function RentSection({
             <Link
               href={`/dashboard/properties/${propertyId}?rentPage=${page - 1}`}
               aria-disabled={page <= 1}
-              className={`rounded-md border border-zinc-300 px-2 py-1 dark:border-zinc-700 ${
-                page <= 1 ? 'pointer-events-none opacity-40' : 'hover:bg-zinc-50 dark:hover:bg-zinc-900'
+              className={`rounded-md border border-edge-strong px-2 py-1  ${
+                page <= 1 ? 'pointer-events-none opacity-40' : 'hover:bg-surface-raised'
               }`}
             >
               Previous
@@ -111,8 +111,8 @@ export function RentSection({
             <Link
               href={`/dashboard/properties/${propertyId}?rentPage=${page + 1}`}
               aria-disabled={page >= totalPages}
-              className={`rounded-md border border-zinc-300 px-2 py-1 dark:border-zinc-700 ${
-                page >= totalPages ? 'pointer-events-none opacity-40' : 'hover:bg-zinc-50 dark:hover:bg-zinc-900'
+              className={`rounded-md border border-edge-strong px-2 py-1  ${
+                page >= totalPages ? 'pointer-events-none opacity-40' : 'hover:bg-surface-raised'
               }`}
             >
               Next

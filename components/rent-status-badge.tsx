@@ -1,9 +1,9 @@
 import type { ChargeStatus } from '@/lib/rent'
 
 const STYLES: Record<ChargeStatus, string> = {
-  paid: 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300',
-  due: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
-  overdue: 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300',
+  paid: 'bg-success-bg text-success-text',
+  due: 'bg-warning-bg text-warning-text',
+  overdue: 'bg-danger-bg text-danger-text',
 }
 
 const LABELS: Record<ChargeStatus, string> = {

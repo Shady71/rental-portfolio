@@ -15,7 +15,7 @@ export function TenantRentSection({
 }) {
   if (!currentCharge && history.length === 0 && page === 1) {
     return (
-      <p className="text-sm text-zinc-500 dark:text-zinc-400">
+      <p className="text-sm text-muted ">
         No rent charges yet. Check back after your landlord sets up this month&apos;s rent.
       </p>
     )
@@ -26,25 +26,25 @@ export function TenantRentSection({
       {currentCharge ? (
         <CurrentChargeCard charge={currentCharge} />
       ) : (
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">No charge generated for this month yet.</p>
+        <p className="text-sm text-muted ">No charge generated for this month yet.</p>
       )}
 
       {(history.length > 0 || totalPages > 1) && (
         <div>
-          <h3 className="mb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">History</h3>
+          <h3 className="mb-2 text-sm font-medium text-body ">History</h3>
           {history.length > 0 ? (
-            <ul className="flex flex-col divide-y divide-zinc-200 dark:divide-zinc-800">
+            <ul className="flex flex-col divide-y divide-edge ">
               {history.map((charge) => {
                 const { status, totalPaid } = deriveChargeStatus(charge, charge.payments)
                 return (
                   <li key={charge.id} className="flex items-center justify-between gap-2 py-2">
                     <div className="flex items-center gap-3">
-                      <span className="text-sm font-medium text-zinc-950 dark:text-zinc-50">
+                      <span className="text-sm font-medium text-heading ">
                         {formatPeriod(charge.period)}
                       </span>
                       <RentStatusBadge status={status} />
                     </div>
-                    <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                    <span className="text-sm text-muted ">
                       ${totalPaid.toLocaleString()} / ${charge.amount_due.toLocaleString()}
                     </span>
                   </li>
@@ -52,11 +52,11 @@ export function TenantRentSection({
               })}
             </ul>
           ) : (
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">No charges on this page.</p>
+            <p className="text-sm text-muted ">No charges on this page.</p>
           )}
 
           {totalPages > 1 && (
-            <div className="mt-2 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+            <div className="mt-2 flex items-center justify-between text-xs text-muted ">
               <p>
                 Page {page} of {totalPages}
               </p>
@@ -64,8 +64,8 @@ export function TenantRentSection({
                 <Link
                   href={`/portal?rentPage=${page - 1}`}
                   aria-disabled={page <= 1}
-                  className={`rounded-md border border-zinc-300 px-2 py-1 dark:border-zinc-700 ${
-                    page <= 1 ? 'pointer-events-none opacity-40' : 'hover:bg-zinc-50 dark:hover:bg-zinc-900'
+                  className={`rounded-md border border-edge-strong px-2 py-1  ${
+                    page <= 1 ? 'pointer-events-none opacity-40' : 'hover:bg-surface-raised'
                   }`}
                 >
                   Previous
@@ -73,8 +73,8 @@ export function TenantRentSection({
                 <Link
                   href={`/portal?rentPage=${page + 1}`}
                   aria-disabled={page >= totalPages}
-                  className={`rounded-md border border-zinc-300 px-2 py-1 dark:border-zinc-700 ${
-                    page >= totalPages ? 'pointer-events-none opacity-40' : 'hover:bg-zinc-50 dark:hover:bg-zinc-900'
+                  className={`rounded-md border border-edge-strong px-2 py-1  ${
+                    page >= totalPages ? 'pointer-events-none opacity-40' : 'hover:bg-surface-raised'
                   }`}
                 >
                   Next
@@ -92,15 +92,15 @@ function CurrentChargeCard({ charge }: { charge: RentChargeWithPayments }) {
   const { status, totalPaid, remaining } = deriveChargeStatus(charge, charge.payments)
 
   return (
-    <div className="rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
+    <div className="rounded-md border border-edge p-4 ">
       <div className="flex items-center justify-between gap-2">
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">{formatPeriod(charge.period)}</p>
+        <p className="text-sm text-muted ">{formatPeriod(charge.period)}</p>
         <RentStatusBadge status={status} />
       </div>
-      <p className="mt-1 text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+      <p className="mt-1 text-2xl font-semibold text-heading ">
         ${charge.amount_due.toLocaleString()}
       </p>
-      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+      <p className="text-sm text-muted ">
         ${totalPaid.toLocaleString()} paid · ${remaining.toLocaleString()} remaining
       </p>
 
@@ -111,11 +111,11 @@ function CurrentChargeCard({ charge }: { charge: RentChargeWithPayments }) {
             type="button"
             disabled
             title="Online payment is coming soon"
-            className="cursor-not-allowed rounded-md border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-400 dark:border-zinc-700 dark:text-zinc-600"
+            className="cursor-not-allowed rounded-md border border-edge-strong px-3 py-1.5 text-sm font-medium text-muted  "
           >
             Pay rent
           </button>
-          <p className="mt-1 text-xs text-zinc-400 dark:text-zinc-500">Online payment coming soon.</p>
+          <p className="mt-1 text-xs text-muted 0">Online payment coming soon.</p>
         </div>
       )}
     </div>

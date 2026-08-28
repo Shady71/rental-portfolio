@@ -19,7 +19,7 @@ export function DeletePaymentForm({ paymentId, propertyId }: { paymentId: string
         {pending ? 'Deleting…' : 'Confirm delete'}
       </button>
       {state.error && (
-        <p role="alert" className="text-xs text-red-700 dark:text-red-400">
+        <p role="alert" className="text-xs text-danger-text">
           {state.error}
         </p>
       )}

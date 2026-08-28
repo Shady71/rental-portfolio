@@ -50,7 +50,7 @@ export default async function DashboardPage() {
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10">
         <p
           role="alert"
-          className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-300"
+          className="rounded-md bg-danger-bg px-3 py-2 text-sm text-danger-text"
         >
           Could not load the dashboard: {error.message}
         </p>
@@ -65,65 +65,65 @@ export default async function DashboardPage() {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">Welcome, {displayName}</h1>
+        <h1 className="text-2xl font-semibold text-accent">Welcome, {displayName}</h1>
         <div className="mt-1 flex items-center gap-2">
           <RoleBadge role={profile?.role ?? 'landlord'} />
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">{formatPeriod(period)}</p>
+          <p className="text-sm text-muted ">{formatPeriod(period)}</p>
         </div>
       </div>
 
       <div
         className={`rounded-lg border p-6 ${
           isPositive
-            ? 'border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950'
-            : 'border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950'
+            ? 'border-success-text/30 bg-success-bg'
+            : 'border-danger-text/30 bg-danger-bg'
         }`}
       >
-        <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Net cash flow this month</p>
+        <p className="text-sm font-medium text-muted ">Net cash flow this month</p>
         <p
           className={`text-4xl font-bold ${
-            isPositive ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'
+            isPositive ? 'text-success-text' : 'text-danger-text'
           }`}
         >
           {isPositive ? '+' : '-'}${Math.abs(portfolio.netCashFlow).toLocaleString()}
         </p>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-muted ">
           ${portfolio.rentCollected.toLocaleString()} collected − ${portfolio.totalExpenses.toLocaleString()} in
           expenses
         </p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-        <div className="rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">Properties</p>
-          <p className="text-xl font-semibold text-zinc-950 dark:text-zinc-50">{portfolio.totalProperties}</p>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        <div className="rounded-md border border-edge p-4 ">
+          <p className="text-sm text-muted ">Properties</p>
+          <p className="text-xl font-semibold text-heading ">{portfolio.totalProperties}</p>
+          <p className="text-xs text-muted ">
             {portfolio.occupiedCount} occupied · {portfolio.vacantCount} vacant
           </p>
         </div>
-        <div className="rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">Rent collected</p>
-          <p className="text-xl font-semibold text-zinc-950 dark:text-zinc-50">
+        <div className="rounded-md border border-edge p-4 ">
+          <p className="text-sm text-muted ">Rent collected</p>
+          <p className="text-xl font-semibold text-heading ">
             ${portfolio.rentCollected.toLocaleString()}
           </p>
         </div>
-        <div className="rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">Rent outstanding</p>
-          <p className="text-xl font-semibold text-zinc-950 dark:text-zinc-50">
+        <div className="rounded-md border border-edge p-4 ">
+          <p className="text-sm text-muted ">Rent outstanding</p>
+          <p className="text-xl font-semibold text-heading ">
             ${portfolio.rentOutstanding.toLocaleString()}
           </p>
         </div>
-        <div className="rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">Expenses</p>
-          <p className="text-xl font-semibold text-zinc-950 dark:text-zinc-50">
+        <div className="rounded-md border border-edge p-4 ">
+          <p className="text-sm text-muted ">Expenses</p>
+          <p className="text-xl font-semibold text-heading ">
             ${portfolio.totalExpenses.toLocaleString()}
           </p>
         </div>
-        <div className="rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">Overdue</p>
+        <div className="rounded-md border border-edge p-4 ">
+          <p className="text-sm text-muted ">Overdue</p>
           <p
             className={`text-xl font-semibold ${
-              portfolio.overdueCount > 0 ? 'text-red-700 dark:text-red-400' : 'text-zinc-950 dark:text-zinc-50'
+              portfolio.overdueCount > 0 ? 'text-danger-text' : 'text-heading '
             }`}
           >
             {portfolio.overdueCount}
@@ -132,19 +132,19 @@ export default async function DashboardPage() {
       </div>
 
       {rows.length === 0 ? (
-        <div className="flex flex-col items-center gap-4 rounded-md border border-dashed border-zinc-300 py-16 text-center dark:border-zinc-700">
-          <p className="text-zinc-600 dark:text-zinc-400">You don&apos;t have any properties yet.</p>
+        <div className="flex flex-col items-center gap-4 rounded-md border border-dashed border-edge-strong py-16 text-center ">
+          <p className="text-muted ">You don&apos;t have any properties yet.</p>
           <Link
             href="/dashboard/properties/new"
-            className="rounded-md bg-zinc-950 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+            className="rounded-md bg-surface-hover px-4 py-2 text-sm font-medium text-heading transition-colors hover:bg-edge-strong"
           >
             Add your first property
           </Link>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
+        <div className="overflow-x-auto rounded-md border border-edge ">
           <table className="w-full text-left text-sm">
-            <thead className="bg-zinc-50 text-zinc-500 dark:bg-zinc-900 dark:text-zinc-400">
+            <thead className="bg-surface-raised text-muted  ">
               <tr>
                 <th className="px-4 py-2 font-medium">Property</th>
                 <th className="px-4 py-2 font-medium">Rent status</th>
@@ -155,11 +155,11 @@ export default async function DashboardPage() {
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.id} className="border-t border-zinc-200 dark:border-zinc-800">
+                <tr key={row.id} className="border-t border-edge ">
                   <td className="px-4 py-2">
                     <Link
                       href={`/dashboard/properties/${row.id}`}
-                      className="font-medium text-zinc-950 underline dark:text-zinc-50"
+                      className="font-medium text-heading underline "
                     >
                       {row.address}
                     </Link>
@@ -168,18 +168,18 @@ export default async function DashboardPage() {
                     {row.status ? (
                       <RentStatusBadge status={row.status} />
                     ) : (
-                      <span className="text-xs text-zinc-400">Not generated</span>
+                      <span className="text-xs text-muted">Not generated</span>
                     )}
                   </td>
-                  <td className="px-4 py-2 text-zinc-700 dark:text-zinc-300">
+                  <td className="px-4 py-2 text-body ">
                     {row.status ? `$${row.rentCollected.toLocaleString()} / $${row.rentDue.toLocaleString()}` : '—'}
                   </td>
-                  <td className="px-4 py-2 text-zinc-700 dark:text-zinc-300">
+                  <td className="px-4 py-2 text-body ">
                     ${row.expenses.toLocaleString()}
                   </td>
                   <td
                     className={`px-4 py-2 font-medium ${
-                      row.netCashFlow < 0 ? 'text-red-700 dark:text-red-400' : 'text-green-700 dark:text-green-400'
+                      row.netCashFlow < 0 ? 'text-danger-text' : 'text-success-text'
                     }`}
                   >
                     {row.netCashFlow < 0 ? '-' : '+'}${Math.abs(row.netCashFlow).toLocaleString()}

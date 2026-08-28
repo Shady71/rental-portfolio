@@ -16,29 +16,29 @@ export function ExpensesSection({
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+      <p className="text-sm text-muted ">
         Total:{' '}
-        <span className="font-medium text-zinc-950 dark:text-zinc-50">
+        <span className="font-medium text-heading ">
           ${total.toLocaleString()}
         </span>
       </p>
 
       {expenses.length === 0 ? (
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">No expenses logged yet.</p>
+        <p className="text-sm text-muted ">No expenses logged yet.</p>
       ) : (
-        <ul className="flex flex-col divide-y divide-zinc-200 dark:divide-zinc-800">
+        <ul className="flex flex-col divide-y divide-edge ">
           {expenses.map((expense) => (
             <li key={expense.id} className="flex items-start justify-between gap-3 py-2">
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-zinc-950 dark:text-zinc-50">
+                  <span className="text-sm font-medium text-heading ">
                     ${expense.amount.toLocaleString()}
                   </span>
-                  <span className="inline-flex w-fit rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                  <span className="inline-flex w-fit rounded-full bg-surface-hover px-2 py-0.5 text-xs font-medium text-body">
                     {formatExpenseCategory(expense.category)}
                   </span>
                 </div>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                <p className="text-xs text-muted ">
                   {new Date(expense.incurred_on).toLocaleDateString()}
                   {expense.note ? ` · ${expense.note}` : ''}
                 </p>
@@ -50,7 +50,7 @@ export function ExpensesSection({
       )}
 
       <details>
-        <summary className="w-fit cursor-pointer text-sm font-medium text-zinc-700 underline dark:text-zinc-300">
+        <summary className="w-fit cursor-pointer text-sm font-medium text-body underline ">
           Add expense
         </summary>
         <ExpenseForm action={createExpenseForProperty} />

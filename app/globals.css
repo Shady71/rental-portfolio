@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #070b16;
+  --foreground: #f7f2e8;
 }
 
 @theme inline {
@@ -18,13 +18,36 @@
   --color-gold-400: #e8c877;
   --color-gold-500: #d4af37;
   --color-gold-600: #b8932a;
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Surfaces */
+  --color-surface: var(--color-navy-950);
+  --color-surface-raised: var(--color-navy-900);
+  --color-surface-hover: var(--color-navy-800);
+
+  /* Borders */
+  --color-edge: var(--color-navy-800);
+  --color-edge-strong: var(--color-navy-700);
+
+  /* Text — mirrors the old zinc-950/700/500 three-tier hierarchy */
+  --color-heading: #f7f2e8;
+  --color-body: #d7dce8;
+  --color-muted: #8b93a8;
+
+  /* Gold accent */
+  --color-accent: var(--color-gold-400);
+  --color-accent-hover: var(--color-gold-300);
+  --color-accent-strong: var(--color-gold-500);
+  --color-accent-foreground: var(--color-navy-950);
+
+  /* Status semantics — kept distinct from brand gold */
+  --color-success-bg: #0f2e1f;
+  --color-success-text: #6ee7a8;
+  --color-warning-bg: #3a2a0f;
+  --color-warning-text: #f5b74d;
+  --color-danger-bg: #3a1414;
+  --color-danger-text: #f87171;
+  --color-info-bg: #132a3a;
+  --color-info-text: #7dd3fc;
 }
 
 body {

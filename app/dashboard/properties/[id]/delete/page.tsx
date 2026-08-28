@@ -23,8 +23,8 @@ export default async function DeletePropertyPage({
 
   return (
     <main className="mx-auto flex w-full max-w-lg flex-col gap-6 px-4 py-10">
-      <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">Delete property</h1>
-      <p className="text-zinc-600 dark:text-zinc-400">
+      <h1 className="text-2xl font-semibold text-accent">Delete property</h1>
+      <p className="text-muted ">
         Are you sure you want to delete <strong>{property.address}</strong>? This will also
         permanently delete its rent charges, expenses, and maintenance tickets. This can&apos;t be
         undone.
@@ -33,7 +33,7 @@ export default async function DeletePropertyPage({
         <DeletePropertyForm propertyId={property.id} />
         <Link
           href={`/dashboard/properties/${property.id}`}
-          className="text-sm text-zinc-600 underline dark:text-zinc-400"
+          className="text-sm text-muted underline "
         >
           Cancel
         </Link>

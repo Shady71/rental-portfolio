@@ -28,7 +28,7 @@ export default async function MaintenanceOverviewPage() {
       <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-10">
         <p
           role="alert"
-          className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-300"
+          className="rounded-md bg-danger-bg px-3 py-2 text-sm text-danger-text"
         >
           Could not load maintenance requests: {error.message}
         </p>
@@ -40,14 +40,14 @@ export default async function MaintenanceOverviewPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-10">
-      <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">Maintenance</h1>
+      <h1 className="text-2xl font-semibold text-accent">Maintenance</h1>
 
       {rows.length === 0 ? (
-        <p className="text-zinc-600 dark:text-zinc-400">Nothing open right now.</p>
+        <p className="text-muted ">Nothing open right now.</p>
       ) : (
-        <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
+        <div className="overflow-x-auto rounded-md border border-edge ">
           <table className="w-full text-left text-sm">
-            <thead className="bg-zinc-50 text-zinc-500 dark:bg-zinc-900 dark:text-zinc-400">
+            <thead className="bg-surface-raised text-muted  ">
               <tr>
                 <th className="px-4 py-2 font-medium">Property</th>
                 <th className="px-4 py-2 font-medium">Request</th>
@@ -57,20 +57,20 @@ export default async function MaintenanceOverviewPage() {
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.ticketId} className="border-t border-zinc-200 dark:border-zinc-800">
+                <tr key={row.ticketId} className="border-t border-edge ">
                   <td className="px-4 py-2">
                     <Link
                       href={`/dashboard/properties/${row.propertyId}`}
-                      className="font-medium text-zinc-950 underline dark:text-zinc-50"
+                      className="font-medium text-heading underline "
                     >
                       {row.propertyAddress}
                     </Link>
                   </td>
-                  <td className="px-4 py-2 text-zinc-700 dark:text-zinc-300">{row.title}</td>
+                  <td className="px-4 py-2 text-body ">{row.title}</td>
                   <td className="px-4 py-2">
                     <TicketStatusBadge status={row.status} />
                   </td>
-                  <td className="px-4 py-2 text-zinc-700 dark:text-zinc-300">
+                  <td className="px-4 py-2 text-body ">
                     {new Date(row.createdAt).toLocaleDateString()}
                   </td>
                 </tr>

@@ -13,15 +13,15 @@ export function GenerateChargesButton() {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md bg-zinc-950 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+        className="rounded-md bg-surface-hover px-3 py-2 text-sm font-medium text-heading transition-colors hover:bg-edge-strong disabled:opacity-50"
       >
         {pending ? 'Generating…' : "Generate this month's charges"}
       </button>
       {state.message && (
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">{state.message}</p>
+        <p className="text-sm text-muted ">{state.message}</p>
       )}
       {state.error && (
-        <p role="alert" className="text-sm text-red-700 dark:text-red-400">
+        <p role="alert" className="text-sm text-danger-text">
           {state.error}
         </p>
       )}

@@ -30,7 +30,7 @@ export function PropertyForm({
   return (
     <form action={formAction} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <label htmlFor="address" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <label htmlFor="address" className="text-sm font-medium text-body ">
           Address
         </label>
         <input
@@ -39,15 +39,15 @@ export function PropertyForm({
           type="text"
           required
           defaultValue={defaultValues?.address}
-          className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-950 focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+          className="rounded-md border border-edge-strong bg-surface-raised px-3 py-2 text-sm text-heading focus:border-accent focus:outline-none   "
         />
         {state.errors?.address && (
-          <p className="text-sm text-red-700 dark:text-red-400">{state.errors.address}</p>
+          <p className="text-sm text-danger-text">{state.errors.address}</p>
         )}
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="monthly_rent" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <label htmlFor="monthly_rent" className="text-sm font-medium text-body ">
           Monthly rent
         </label>
         <input
@@ -58,16 +58,16 @@ export function PropertyForm({
           min="0.01"
           required
           defaultValue={defaultValues?.monthly_rent}
-          className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-950 focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+          className="rounded-md border border-edge-strong bg-surface-raised px-3 py-2 text-sm text-heading focus:border-accent focus:outline-none   "
         />
         {state.errors?.monthly_rent && (
-          <p className="text-sm text-red-700 dark:text-red-400">{state.errors.monthly_rent}</p>
+          <p className="text-sm text-danger-text">{state.errors.monthly_rent}</p>
         )}
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="purchase_price" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          Purchase price <span className="text-zinc-400">(optional)</span>
+        <label htmlFor="purchase_price" className="text-sm font-medium text-body ">
+          Purchase price <span className="text-muted">(optional)</span>
         </label>
         <input
           id="purchase_price"
@@ -76,17 +76,17 @@ export function PropertyForm({
           step="0.01"
           min="0.01"
           defaultValue={defaultValues?.purchase_price ?? undefined}
-          className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-950 focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+          className="rounded-md border border-edge-strong bg-surface-raised px-3 py-2 text-sm text-heading focus:border-accent focus:outline-none   "
         />
         {state.errors?.purchase_price && (
-          <p className="text-sm text-red-700 dark:text-red-400">{state.errors.purchase_price}</p>
+          <p className="text-sm text-danger-text">{state.errors.purchase_price}</p>
         )}
       </div>
 
       {state.formError && (
         <p
           role="alert"
-          className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-300"
+          className="rounded-md bg-danger-bg px-3 py-2 text-sm text-danger-text"
         >
           {state.formError}
         </p>
@@ -96,11 +96,11 @@ export function PropertyForm({
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-zinc-950 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+          className="rounded-md bg-surface-hover px-3 py-2 text-sm font-medium text-heading transition-colors hover:bg-edge-strong disabled:opacity-50"
         >
           {pending ? pendingLabel : submitLabel}
         </button>
-        <Link href={cancelHref} className="text-sm text-zinc-600 underline dark:text-zinc-400">
+        <Link href={cancelHref} className="text-sm text-muted underline ">
           Cancel
         </Link>
       </div>
