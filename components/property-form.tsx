@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useActionState } from 'react'
 import type { PropertyFormState } from '@/app/dashboard/properties/actions'
+import { PROPERTY_STATUSES, formatPropertyStatus, type PropertyStatus } from '@/lib/properties'
 
 const initialState: PropertyFormState = {}
 
@@ -12,6 +13,7 @@ type PropertyFormProps = {
     address: string
     monthly_rent: number
     purchase_price: number | null
+    status?: PropertyStatus
   }
   submitLabel: string
   pendingLabel: string
@@ -80,6 +82,28 @@ export function PropertyForm({
         />
         {state.errors?.purchase_price && (
           <p className="text-sm text-danger-text">{state.errors.purchase_price}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="status" className="text-sm font-medium text-body ">
+          Status
+        </label>
+        <select
+          id="status"
+          name="status"
+          required
+          defaultValue={defaultValues?.status ?? 'vacant'}
+          className="rounded-md border border-edge-strong bg-surface-raised px-3 py-2 text-sm text-heading focus:border-accent focus:outline-none   "
+        >
+          {PROPERTY_STATUSES.map((status) => (
+            <option key={status} value={status}>
+              {formatPropertyStatus(status)}
+            </option>
+          ))}
+        </select>
+        {state.errors?.status && (
+          <p className="text-sm text-danger-text">{state.errors.status}</p>
         )}
       </div>
 

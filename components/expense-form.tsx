@@ -68,7 +68,6 @@ export function ExpenseForm({
           name="incurred_on"
           type="date"
           defaultValue={today}
-          max={today}
           required
           className="rounded-md border border-edge-strong bg-surface-raised px-2 py-1.5 text-sm text-heading focus:border-accent focus:outline-none   "
         />

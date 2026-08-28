@@ -13,7 +13,7 @@ export default async function EditPropertyPage({
 
   const { data: property, error } = await supabase
     .from('properties')
-    .select('id, address, monthly_rent, purchase_price')
+    .select('id, address, monthly_rent, purchase_price, status')
     .eq('id', id)
     .maybeSingle()
 

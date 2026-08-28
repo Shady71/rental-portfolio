@@ -30,3 +30,7 @@ export function formatExpenseCategory(category: ExpenseCategory): string {
 export function todayISO(): string {
   return new Date().toISOString().slice(0, 10)
 }
+
+export function isUpcoming(incurredOn: string, today: string = todayISO()): boolean {
+  return incurredOn > today
+}

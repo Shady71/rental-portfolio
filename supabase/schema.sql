@@ -11,6 +11,7 @@ create table public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   role text not null check (role in ('landlord', 'tenant')),
   full_name text,
+  currency text not null default 'USD' check (currency in ('USD', 'EUR', 'GBP', 'ILS')),
   created_at timestamptz not null default now()
 );
 
@@ -47,6 +48,7 @@ create table public.properties (
   address text not null,
   purchase_price numeric(12,2),
   monthly_rent numeric(10,2) not null,
+  status text not null default 'vacant' check (status in ('occupied', 'vacant')),
   created_at timestamptz not null default now()
 );
 
@@ -139,7 +141,7 @@ create policy "read own profile" on public.profiles
 -- exception out of a pre-existing table-wide GRANT; the table-wide grant
 -- has to go first.)
 revoke update on public.profiles from authenticated;
-grant update (full_name) on public.profiles to authenticated;
+grant update (full_name, currency) on public.profiles to authenticated;
 
 create policy "update own profile" on public.profiles
   for update

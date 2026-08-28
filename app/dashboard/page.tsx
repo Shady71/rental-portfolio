@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import { formatPeriod, getCurrentPeriod, getNextPeriod } from '@/lib/rent'
 import { summarizePropertyMonth, summarizePortfolio, sortByAttention, type PropertyMonthInput } from '@/lib/portfolio'
+import { formatCurrency, type CurrencyCode } from '@/lib/currency'
 import { RentStatusBadge } from '@/components/rent-status-badge'
 import { RoleBadge } from '@/components/role-badge'
 
@@ -18,10 +19,11 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('full_name, role')
+    .select('full_name, role, currency')
     .eq('id', authData.claims.sub)
     .maybeSingle()
   const displayName = profile?.full_name?.trim() || authData.claims.email || 'there'
+  const currency = (profile?.currency as CurrencyCode) ?? 'USD'
 
   const { data: properties, error } = await supabase
     .from('properties')
@@ -29,7 +31,7 @@ export default async function DashboardPage() {
       `
       id,
       address,
-      tenant_id,
+      status,
       rent_charges (
         amount_due,
         due_date,
@@ -79,7 +81,7 @@ export default async function DashboardPage() {
             isPositive ? 'text-success-text' : 'text-danger-text'
           }`}
         >
-          {isPositive ? '+' : '-'}${Math.abs(portfolio.netCashFlow).toLocaleString()}
+          {isPositive ? '+' : '-'}{formatCurrency(Math.abs(portfolio.netCashFlow), currency)}
         </p>
       </div>
 
@@ -94,19 +96,19 @@ export default async function DashboardPage() {
         <div className="rounded-md border border-edge p-4 ">
           <p className="text-sm text-muted ">Rent collected</p>
           <p className="text-xl font-semibold text-heading ">
-            ${portfolio.rentCollected.toLocaleString()}
+            {formatCurrency(portfolio.rentCollected, currency)}
           </p>
         </div>
         <div className="rounded-md border border-edge p-4 ">
           <p className="text-sm text-muted ">Rent outstanding</p>
           <p className="text-xl font-semibold text-heading ">
-            ${portfolio.rentOutstanding.toLocaleString()}
+            {formatCurrency(portfolio.rentOutstanding, currency)}
           </p>
         </div>
         <div className="rounded-md border border-edge p-4 ">
           <p className="text-sm text-muted ">Expenses</p>
           <p className="text-xl font-semibold text-heading ">
-            ${portfolio.totalExpenses.toLocaleString()}
+            {formatCurrency(portfolio.totalExpenses, currency)}
           </p>
         </div>
         <div className="rounded-md border border-edge p-4 ">
@@ -162,17 +164,19 @@ export default async function DashboardPage() {
                     )}
                   </td>
                   <td className="px-4 py-2 text-body ">
-                    {row.status ? `$${row.rentCollected.toLocaleString()} / $${row.rentDue.toLocaleString()}` : '—'}
+                    {row.status
+                      ? `${formatCurrency(row.rentCollected, currency)} / ${formatCurrency(row.rentDue, currency)}`
+                      : '—'}
                   </td>
                   <td className="px-4 py-2 text-body ">
-                    ${row.expenses.toLocaleString()}
+                    {formatCurrency(row.expenses, currency)}
                   </td>
                   <td
                     className={`px-4 py-2 font-medium ${
                       row.netCashFlow < 0 ? 'text-danger-text' : 'text-success-text'
                     }`}
                   >
-                    {row.netCashFlow < 0 ? '-' : '+'}${Math.abs(row.netCashFlow).toLocaleString()}
+                    {row.netCashFlow < 0 ? '-' : '+'}{formatCurrency(Math.abs(row.netCashFlow), currency)}
                   </td>
                 </tr>
               ))}

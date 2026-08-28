@@ -1,9 +1,10 @@
 import { deriveChargeStatus, round2, type ChargeStatus, type RentChargeCore, type PaymentAmount } from './rent'
+import type { PropertyStatus } from './properties'
 
 export type PropertyMonthInput = {
   id: string
   address: string
-  tenant_id: string | null
+  status: PropertyStatus
   rent_charges: (RentChargeCore & { payments: PaymentAmount[] })[]
   expenses: { amount: number }[]
 }
@@ -25,7 +26,7 @@ export function summarizePropertyMonth(
   property: PropertyMonthInput,
   today: Date = new Date()
 ): PropertyMonthSummary {
-  const occupied = property.tenant_id !== null
+  const occupied = property.status === 'occupied'
   const expenses = round2(property.expenses.reduce((sum, expense) => sum + expense.amount, 0))
   const charge = property.rent_charges[0] ?? null
 

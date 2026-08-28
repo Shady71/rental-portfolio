@@ -1,5 +1,9 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
+import { formatCurrency, type CurrencyCode } from '@/lib/currency'
+import { PropertyStatusBadge } from '@/components/property-status-badge'
+import type { PropertyStatus } from '@/lib/properties'
 
 const PAGE_SIZE = 10
 
@@ -15,11 +19,26 @@ export default async function PropertiesPage({
 
   const supabase = await createClient()
 
+  const { data: authData } = await supabase.auth.getClaims()
+  if (!authData) {
+    redirect('/login')
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('currency')
+    .eq('id', authData.claims.sub)
+    .maybeSingle()
+  const currency = (profile?.currency as CurrencyCode) ?? 'USD'
+
   const { data: properties, count, error } = await supabase
     .from('properties')
-    .select('id, address, monthly_rent, created_at', { count: 'exact' })
+    .select('id, address, monthly_rent, status, created_at', { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(from, to)
+    .returns<
+      { id: string; address: string; monthly_rent: number; status: PropertyStatus; created_at: string }[]
+    >()
 
   if (error) {
     return (
@@ -69,6 +88,7 @@ export default async function PropertiesPage({
                 <tr>
                   <th className="px-4 py-2 font-medium">Address</th>
                   <th className="px-4 py-2 font-medium">Monthly rent</th>
+                  <th className="px-4 py-2 font-medium">Status</th>
                   <th className="px-4 py-2 font-medium">Added</th>
                 </tr>
               </thead>
@@ -84,7 +104,10 @@ export default async function PropertiesPage({
                       </Link>
                     </td>
                     <td className="px-4 py-2 text-body ">
-                      ${property.monthly_rent.toLocaleString()}
+                      {formatCurrency(property.monthly_rent, currency)}
+                    </td>
+                    <td className="px-4 py-2">
+                      <PropertyStatusBadge status={property.status} />
                     </td>
                     <td className="px-4 py-2 text-body ">
                       {new Date(property.created_at).toLocaleDateString()}

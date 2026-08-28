@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { deriveChargeStatus, formatPeriod, type RentChargeWithPayments } from '@/lib/rent'
+import { formatCurrency, type CurrencyCode } from '@/lib/currency'
 import { RentStatusBadge } from '@/components/rent-status-badge'
 
 export function TenantRentSection({
@@ -7,11 +8,13 @@ export function TenantRentSection({
   history,
   page,
   totalPages,
+  currency,
 }: {
   currentCharge: RentChargeWithPayments | null
   history: RentChargeWithPayments[]
   page: number
   totalPages: number
+  currency: CurrencyCode
 }) {
   if (!currentCharge && history.length === 0 && page === 1) {
     return (
@@ -24,7 +27,7 @@ export function TenantRentSection({
   return (
     <div className="flex flex-col gap-4">
       {currentCharge ? (
-        <CurrentChargeCard charge={currentCharge} />
+        <CurrentChargeCard charge={currentCharge} currency={currency} />
       ) : (
         <p className="text-sm text-muted ">No charge generated for this month yet.</p>
       )}
@@ -45,7 +48,7 @@ export function TenantRentSection({
                       <RentStatusBadge status={status} />
                     </div>
                     <span className="text-sm text-muted ">
-                      ${totalPaid.toLocaleString()} / ${charge.amount_due.toLocaleString()}
+                      {formatCurrency(totalPaid, currency)} / {formatCurrency(charge.amount_due, currency)}
                     </span>
                   </li>
                 )
@@ -88,7 +91,7 @@ export function TenantRentSection({
   )
 }
 
-function CurrentChargeCard({ charge }: { charge: RentChargeWithPayments }) {
+function CurrentChargeCard({ charge, currency }: { charge: RentChargeWithPayments; currency: CurrencyCode }) {
   const { status, totalPaid, remaining } = deriveChargeStatus(charge, charge.payments)
 
   return (
@@ -98,10 +101,10 @@ function CurrentChargeCard({ charge }: { charge: RentChargeWithPayments }) {
         <RentStatusBadge status={status} />
       </div>
       <p className="mt-1 text-2xl font-semibold text-heading ">
-        ${charge.amount_due.toLocaleString()}
+        {formatCurrency(charge.amount_due, currency)}
       </p>
       <p className="text-sm text-muted ">
-        ${totalPaid.toLocaleString()} paid · ${remaining.toLocaleString()} remaining
+        {formatCurrency(totalPaid, currency)} paid · {formatCurrency(remaining, currency)} remaining
       </p>
 
       {status !== 'paid' && (

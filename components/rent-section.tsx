@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { deriveChargeStatus, formatPeriod, type RentChargeWithPayments } from '@/lib/rent'
+import { formatCurrency, type CurrencyCode } from '@/lib/currency'
 import { RentStatusBadge } from '@/components/rent-status-badge'
 import { PaymentForm } from '@/components/payment-form'
 import { EditPaymentForm } from '@/components/edit-payment-form'
@@ -10,11 +11,13 @@ export function RentSection({
   charges,
   page,
   totalPages,
+  currency,
 }: {
   propertyId: string
   charges: RentChargeWithPayments[]
   page: number
   totalPages: number
+  currency: CurrencyCode
 }) {
   if (charges.length === 0 && page === 1) {
     return (
@@ -43,7 +46,7 @@ export function RentSection({
                   <RentStatusBadge status={status} />
                 </div>
                 <span className="text-sm text-muted ">
-                  ${charge.amount_due.toLocaleString()} due · ${totalPaid.toLocaleString()} paid
+                  {formatCurrency(charge.amount_due, currency)} due · {formatCurrency(totalPaid, currency)} paid
                 </span>
               </div>
 
@@ -53,7 +56,7 @@ export function RentSection({
                     <li key={payment.id} className="flex flex-col gap-1">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <span>
-                          ${payment.amount.toLocaleString()} on {new Date(payment.paid_at).toLocaleDateString()}
+                          {formatCurrency(payment.amount, currency)} on {new Date(payment.paid_at).toLocaleDateString()}
                         </span>
                         <div className="flex gap-3">
                           <details>

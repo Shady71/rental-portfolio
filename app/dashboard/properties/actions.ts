@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/utils/supabase/server'
 import { isExpenseCategory, type ExpenseCategory } from '@/lib/expenses'
+import { isPropertyStatus, type PropertyStatus } from '@/lib/properties'
 import type { TicketStatus } from '@/lib/maintenance'
 
 export type PropertyFormState = {
@@ -11,6 +12,7 @@ export type PropertyFormState = {
     address?: string
     monthly_rent?: string
     purchase_price?: string
+    status?: string
   }
   formError?: string
 }
@@ -23,6 +25,7 @@ function parsePropertyForm(formData: FormData) {
   const address = String(formData.get('address') ?? '').trim()
   const monthlyRentRaw = String(formData.get('monthly_rent') ?? '').trim()
   const purchasePriceRaw = String(formData.get('purchase_price') ?? '').trim()
+  const statusRaw = String(formData.get('status') ?? '').trim()
 
   const errors: NonNullable<PropertyFormState['errors']> = {}
 
@@ -43,15 +46,20 @@ function parsePropertyForm(formData: FormData) {
     }
   }
 
-  return { address, monthlyRent, purchasePrice, errors }
+  const status: PropertyStatus | null = isPropertyStatus(statusRaw) ? statusRaw : null
+  if (!status) {
+    errors.status = 'Select a valid status.'
+  }
+
+  return { address, monthlyRent, purchasePrice, status, errors }
 }
 
 export async function createProperty(
   _prevState: PropertyFormState,
   formData: FormData
 ): Promise<PropertyFormState> {
-  const { address, monthlyRent, purchasePrice, errors } = parsePropertyForm(formData)
-  if (Object.keys(errors).length > 0) {
+  const { address, monthlyRent, purchasePrice, status, errors } = parsePropertyForm(formData)
+  if (Object.keys(errors).length > 0 || !status) {
     return { errors }
   }
 
@@ -66,6 +74,7 @@ export async function createProperty(
     address,
     monthly_rent: monthlyRent,
     purchase_price: purchasePrice,
+    status,
   })
 
   if (error) {
@@ -81,8 +90,8 @@ export async function updateProperty(
   _prevState: PropertyFormState,
   formData: FormData
 ): Promise<PropertyFormState> {
-  const { address, monthlyRent, purchasePrice, errors } = parsePropertyForm(formData)
-  if (Object.keys(errors).length > 0) {
+  const { address, monthlyRent, purchasePrice, status, errors } = parsePropertyForm(formData)
+  if (Object.keys(errors).length > 0 || !status) {
     return { errors }
   }
 
@@ -98,6 +107,7 @@ export async function updateProperty(
       address,
       monthly_rent: monthlyRent,
       purchase_price: purchasePrice,
+      status,
     })
     .eq('id', propertyId)
     .select('id')
@@ -169,11 +179,8 @@ function parseExpenseForm(formData: FormData) {
     errors.category = 'Select a valid category.'
   }
 
-  const today = new Date().toISOString().slice(0, 10)
   if (!incurredOn) {
     errors.incurred_on = 'Date is required.'
-  } else if (incurredOn > today) {
-    errors.incurred_on = 'Date cannot be in the future.'
   }
 
   return { amount, category, incurredOn, note: note || null, errors }

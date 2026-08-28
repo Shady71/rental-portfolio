@@ -8,6 +8,7 @@ import type { MaintenanceTicket, TicketUpdate } from '@/lib/maintenance'
 import { TenantRentSection } from '@/components/tenant-rent-section'
 import { getCurrentPeriod, RENT_HISTORY_PAGE_SIZE, type RentChargeWithPayments } from '@/lib/rent'
 import { RoleBadge } from '@/components/role-badge'
+import type { CurrencyCode } from '@/lib/currency'
 
 type TenantTicket = MaintenanceTicket & { updates: TicketUpdate[] }
 
@@ -41,10 +42,22 @@ export default async function PortalPage({
   // were ever set.
   const { data: property } = await supabase
     .from('properties')
-    .select('id, address')
+    .select('id, address, owner_id')
     .order('created_at', { ascending: true })
     .limit(1)
     .maybeSingle()
+
+  let landlordCurrency: CurrencyCode = 'USD'
+  if (property) {
+    const { data: landlordProfile } = await supabase
+      .from('profiles')
+      .select('currency')
+      .eq('id', property.owner_id)
+      .maybeSingle()
+    if (landlordProfile?.currency) {
+      landlordCurrency = landlordProfile.currency as CurrencyCode
+    }
+  }
 
   const currentPeriod = getCurrentPeriod()
 
@@ -131,6 +144,7 @@ export default async function PortalPage({
                 history={rentHistory ?? []}
                 page={rentPage}
                 totalPages={rentTotalPages}
+                currency={landlordCurrency}
               />
             )}
           </div>

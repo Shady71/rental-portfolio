@@ -1,6 +1,8 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import { deriveChargeStatus, formatPeriod, getCurrentPeriod, type ChargeStatus } from '@/lib/rent'
+import { formatCurrency, type CurrencyCode } from '@/lib/currency'
 import { RentStatusBadge } from '@/components/rent-status-badge'
 import { GenerateChargesButton } from '@/components/generate-charges-button'
 
@@ -20,6 +22,18 @@ type PropertyWithCurrentCharge = {
 export default async function RentOverviewPage() {
   const supabase = await createClient()
   const period = getCurrentPeriod()
+
+  const { data: authData } = await supabase.auth.getClaims()
+  if (!authData) {
+    redirect('/login')
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('currency')
+    .eq('id', authData.claims.sub)
+    .maybeSingle()
+  const currency = (profile?.currency as CurrencyCode) ?? 'USD'
 
   const { data: properties, error } = await supabase
     .from('properties')
@@ -68,8 +82,8 @@ export default async function RentOverviewPage() {
   const overdueCount = rows.filter((row) => row.status === 'overdue').length
 
   const summary = [
-    { label: 'Collected this month', value: `$${totalCollected.toLocaleString()}` },
-    { label: 'Outstanding', value: `$${totalOutstanding.toLocaleString()}` },
+    { label: 'Collected this month', value: formatCurrency(totalCollected, currency) },
+    { label: 'Outstanding', value: formatCurrency(totalOutstanding, currency) },
     { label: 'Overdue properties', value: String(overdueCount) },
   ]
 
@@ -121,7 +135,7 @@ export default async function RentOverviewPage() {
                     </Link>
                   </td>
                   <td className="px-4 py-2 text-body ">
-                    ${property.monthly_rent.toLocaleString()}
+                    {formatCurrency(property.monthly_rent, currency)}
                   </td>
                   <td className="px-4 py-2">
                     {status ? (
@@ -131,7 +145,7 @@ export default async function RentOverviewPage() {
                     )}
                   </td>
                   <td className="px-4 py-2 text-body ">
-                    {charge ? `$${remaining.toLocaleString()}` : '—'}
+                    {charge ? formatCurrency(remaining, currency) : '—'}
                   </td>
                 </tr>
               ))}

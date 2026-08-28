@@ -8,6 +8,8 @@ import type { Expense } from '@/lib/expenses'
 import { TenantSection } from '@/components/tenant-section'
 import { MaintenanceSection, type LandlordTicket } from '@/components/maintenance-section'
 import type { TicketStatus, TicketUpdate } from '@/lib/maintenance'
+import { formatCurrency, type CurrencyCode } from '@/lib/currency'
+import { PropertyStatusBadge } from '@/components/property-status-badge'
 
 export default async function PropertyDetailPage({
   params,
@@ -28,9 +30,16 @@ export default async function PropertyDetailPage({
     redirect('/login')
   }
 
+  const { data: ownProfile } = await supabase
+    .from('profiles')
+    .select('currency')
+    .eq('id', authData.claims.sub)
+    .maybeSingle()
+  const currency = (ownProfile?.currency as CurrencyCode) ?? 'USD'
+
   const { data: property, error } = await supabase
     .from('properties')
-    .select('id, address, monthly_rent, purchase_price, created_at, tenant_id')
+    .select('id, address, monthly_rent, purchase_price, created_at, tenant_id, status')
     .eq('id', id)
     .maybeSingle()
 
@@ -181,19 +190,25 @@ export default async function PropertyDetailPage({
         <div>
           <dt className="text-sm text-muted ">Monthly rent</dt>
           <dd className="text-lg text-heading ">
-            ${property.monthly_rent.toLocaleString()}
+            {formatCurrency(property.monthly_rent, currency)}
           </dd>
         </div>
         <div>
           <dt className="text-sm text-muted ">Purchase price</dt>
           <dd className="text-lg text-heading ">
-            {property.purchase_price ? `$${property.purchase_price.toLocaleString()}` : '—'}
+            {property.purchase_price ? formatCurrency(property.purchase_price, currency) : '—'}
           </dd>
         </div>
         <div>
           <dt className="text-sm text-muted ">Added on</dt>
           <dd className="text-lg text-heading ">
             {new Date(property.created_at).toLocaleDateString()}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-sm text-muted ">Status</dt>
+          <dd className="mt-1">
+            <PropertyStatusBadge status={property.status} />
           </dd>
         </div>
       </dl>
@@ -206,12 +221,23 @@ export default async function PropertyDetailPage({
 
         <div className="rounded-md border border-edge p-4 ">
           <h2 className="mb-3 font-medium text-body ">Rent</h2>
-          <RentSection propertyId={property.id} charges={charges ?? []} page={rentPage} totalPages={rentTotalPages} />
+          <RentSection
+            propertyId={property.id}
+            charges={charges ?? []}
+            page={rentPage}
+            totalPages={rentTotalPages}
+            currency={currency}
+          />
         </div>
 
         <div className="rounded-md border border-edge p-4 ">
           <h2 className="mb-3 font-medium text-body ">Expenses</h2>
-          <ExpensesSection propertyId={property.id} expenses={expenses ?? []} total={expenseTotal} />
+          <ExpensesSection
+            propertyId={property.id}
+            expenses={expenses ?? []}
+            total={expenseTotal}
+            currency={currency}
+          />
         </div>
 
         <div className="rounded-md border border-edge p-4 ">
