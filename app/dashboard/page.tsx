@@ -16,7 +16,11 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
-  const { data: profile } = await supabase.from('profiles').select('full_name, role').maybeSingle()
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name, role')
+    .eq('id', authData.claims.sub)
+    .maybeSingle()
   const displayName = profile?.full_name?.trim() || authData.claims.email || 'there'
 
   const { data: properties, error } = await supabase

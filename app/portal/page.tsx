@@ -19,7 +19,11 @@ export default async function PortalPage() {
     redirect('/login')
   }
 
-  const { data: profile } = await supabase.from('profiles').select('full_name, role').maybeSingle()
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name, role')
+    .eq('id', data.claims.sub)
+    .maybeSingle()
   const displayName = profile?.full_name?.trim() || data.claims.email || 'there'
 
   // A tenant is expected to have exactly one assigned property. The schema
