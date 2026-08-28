@@ -72,13 +72,7 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <div
-        className={`rounded-lg border p-6 ${
-          isPositive
-            ? 'border-success-text/30 bg-success-bg'
-            : 'border-danger-text/30 bg-danger-bg'
-        }`}
-      >
+      <div className="rounded-lg border border-edge p-6">
         <p className="text-sm font-medium text-muted ">Net cash flow this month</p>
         <p
           className={`text-4xl font-bold ${
