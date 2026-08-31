@@ -28,6 +28,10 @@ export function getNextStatus(status: TicketStatus): TicketStatus | null {
   return NEXT_STATUS[status]
 }
 
+export function validateTicketTitle(title: string): string | null {
+  return title.trim() ? null : 'Title is required.'
+}
+
 export function formatTicketStatus(status: TicketStatus): string {
   return status
     .split('_')

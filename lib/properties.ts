@@ -11,3 +11,14 @@ export function isPropertyStatus(value: string): value is PropertyStatus {
 export function formatPropertyStatus(status: PropertyStatus): string {
   return status.charAt(0).toUpperCase() + status.slice(1)
 }
+
+export function validateAddress(address: string): string | null {
+  return address.trim() ? null : 'Address is required.'
+}
+
+export function validateMonthlyRent(raw: string): string | null {
+  const value = Number(raw)
+  return raw.trim() !== '' && Number.isFinite(value) && value > 0
+    ? null
+    : 'Monthly rent must be a positive number.'
+}

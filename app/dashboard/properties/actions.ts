@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/utils/supabase/server'
 import { isExpenseCategory, type ExpenseCategory } from '@/lib/expenses'
-import { isPropertyStatus, type PropertyStatus } from '@/lib/properties'
+import { isPropertyStatus, validateAddress, validateMonthlyRent, type PropertyStatus } from '@/lib/properties'
 import type { TicketStatus } from '@/lib/maintenance'
 
 export type PropertyFormState = {
@@ -29,14 +29,16 @@ function parsePropertyForm(formData: FormData) {
 
   const errors: NonNullable<PropertyFormState['errors']> = {}
 
-  if (!address) {
-    errors.address = 'Address is required.'
+  const addressError = validateAddress(address)
+  if (addressError) {
+    errors.address = addressError
   }
 
-  const monthlyRent = Number(monthlyRentRaw)
-  if (!monthlyRentRaw || !Number.isFinite(monthlyRent) || monthlyRent <= 0) {
-    errors.monthly_rent = 'Monthly rent must be a positive number.'
+  const monthlyRentError = validateMonthlyRent(monthlyRentRaw)
+  if (monthlyRentError) {
+    errors.monthly_rent = monthlyRentError
   }
+  const monthlyRent = Number(monthlyRentRaw)
 
   let purchasePrice: number | null = null
   if (purchasePriceRaw) {

@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/utils/supabase/server'
-import { getCurrentPeriod, getDefaultDueDate, todayISO } from '@/lib/rent'
+import { getCurrentPeriod, getDefaultDueDate, validatePaymentAmount, validatePaymentDate } from '@/lib/rent'
 
 export type GenerateChargesState = {
   message?: string
@@ -73,15 +73,15 @@ function parsePaymentForm(formData: FormData) {
 
   const errors: NonNullable<PaymentFormState['errors']> = {}
 
-  const amount = Number(amountRaw)
-  if (!amountRaw || !Number.isFinite(amount) || amount <= 0) {
-    errors.amount = 'Amount must be a positive number.'
+  const amountError = validatePaymentAmount(amountRaw)
+  if (amountError) {
+    errors.amount = amountError
   }
+  const amount = Number(amountRaw)
 
-  if (!paidAt) {
-    errors.paid_at = 'Date is required.'
-  } else if (paidAt > todayISO()) {
-    errors.paid_at = 'Date cannot be in the future.'
+  const paidAtError = validatePaymentDate(paidAt)
+  if (paidAtError) {
+    errors.paid_at = paidAtError
   }
 
   return { amount, paidAt, errors }

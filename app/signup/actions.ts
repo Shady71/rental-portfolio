@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
 import { mapAuthError } from '@/lib/auth-errors'
+import { isRole } from '@/lib/roles'
 
 export type SignupState = {
   error?: string
@@ -17,12 +18,12 @@ export async function signup(
   const email = String(formData.get('email') ?? '').trim()
   const password = String(formData.get('password') ?? '')
   const fullName = String(formData.get('full_name') ?? '').trim()
-  const role = formData.get('role')
+  const role = String(formData.get('role') ?? '')
 
   if (!email || !password || !fullName) {
     return { error: 'Please fill in all fields.' }
   }
-  if (role !== 'landlord' && role !== 'tenant') {
+  if (!isRole(role)) {
     return { error: 'Please select a valid role.' }
   }
 

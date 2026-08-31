@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/utils/supabase/server'
+import { validateTicketTitle } from '@/lib/maintenance'
 
 export type TicketFormState = {
   errors?: {
@@ -19,8 +20,9 @@ export async function fileTicket(
   const title = String(formData.get('title') ?? '').trim()
   const description = String(formData.get('description') ?? '').trim()
 
-  if (!title) {
-    return { errors: { title: 'Title is required.' } }
+  const titleError = validateTicketTitle(title)
+  if (titleError) {
+    return { errors: { title: titleError } }
   }
 
   const supabase = await createClient()

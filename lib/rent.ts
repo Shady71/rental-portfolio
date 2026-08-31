@@ -68,6 +68,19 @@ export function todayISO(): string {
   return toISODate(new Date())
 }
 
+export function validatePaymentAmount(raw: string): string | null {
+  const value = Number(raw)
+  return raw.trim() !== '' && Number.isFinite(value) && value > 0
+    ? null
+    : 'Amount must be a positive number.'
+}
+
+export function validatePaymentDate(paidAt: string, today: string = todayISO()): string | null {
+  if (!paidAt) return 'Date is required.'
+  if (paidAt > today) return 'Date cannot be in the future.'
+  return null
+}
+
 export function formatPeriod(period: string): string {
   const [year, month] = period.split('-').map(Number)
   return new Date(Date.UTC(year, month - 1, 1)).toLocaleDateString('en-US', {
