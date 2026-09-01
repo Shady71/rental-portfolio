@@ -99,6 +99,25 @@ the schema (adding a delete policy that isn't otherwise wanted) or bypassing
 the UI to clean up via direct SQL from the test itself — both out of scope
 for a black-box E2E suite.
 
+### A finding surfaced while fixing UI-04
+
+The property **create** form (`/dashboard/properties/new`) does not
+preserve typed input after a failed submission. Confirmed against the real
+app: submitting a whitespace-only address (which passes the browser's
+`required` check but fails `validateAddress` server-side) correctly shows
+"Address is required.", but **both** the address and monthly-rent fields
+reset to empty afterward — not just the errored field. The create form's
+inputs have no `defaultValue` tied to the just-submitted values (only the
+**edit** form binds `defaultValue` to the server-loaded record), so React
+resets these uncontrolled fields once the Server Action settles. A
+landlord who mistypes one field on a new property currently has to
+re-enter everything. `UI-04` no longer asserts values are preserved, since
+they aren't — it only asserts the error text renders and nothing was
+created. Fixing this (e.g., having `PropertyFormState` echo back the
+submitted values so the form can bind `defaultValue` to them on error)
+would be an app-code change, not a test change — flagging it rather than
+making it unasked.
+
 ### Route guards and query filters
 
 `app/dashboard/layout.tsx` and `app/portal/page.tsx` each read the caller's
