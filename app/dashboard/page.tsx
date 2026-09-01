@@ -42,6 +42,7 @@ export default async function DashboardPage() {
       )
     `
     )
+    .eq('owner_id', authData.claims.sub)
     .eq('rent_charges.period', period)
     .gte('expenses.incurred_on', period)
     .lt('expenses.incurred_on', periodEnd)

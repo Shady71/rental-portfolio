@@ -34,6 +34,11 @@ export default async function PortalPage({
     .select('full_name, role')
     .eq('id', data.claims.sub)
     .maybeSingle()
+
+  if (profile?.role === 'landlord') {
+    redirect('/dashboard')
+  }
+
   const displayName = profile?.full_name?.trim() || data.claims.email || 'there'
 
   // A tenant is expected to have exactly one assigned property. The schema
@@ -43,6 +48,7 @@ export default async function PortalPage({
   const { data: property } = await supabase
     .from('properties')
     .select('id, address, owner_id')
+    .eq('tenant_id', data.claims.sub)
     .order('created_at', { ascending: true })
     .limit(1)
     .maybeSingle()

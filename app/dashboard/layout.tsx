@@ -14,6 +14,16 @@ export default async function DashboardLayout({
     redirect('/login')
   }
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', data.claims.sub)
+    .maybeSingle()
+
+  if (profile?.role === 'tenant') {
+    redirect('/portal')
+  }
+
   return (
     <>
       <DashboardNav />
