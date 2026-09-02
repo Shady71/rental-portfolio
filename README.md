@@ -165,7 +165,6 @@ app/                      Routes, pages, and Server Actions (Next.js App Router)
   login/ signup/ logout/  Authentication
 components/               Shared UI components (forms, sections, badges)
 lib/                      Pure business logic — rent, portfolio, validation, currency
-public/                   Static assets served at the site root
 utils/supabase/           Supabase clients (browser, server, middleware)
 supabase/schema.sql       Database schema, RLS policies, trigger, function
 tests/unit/               Vitest unit tests
